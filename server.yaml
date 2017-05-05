@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: udp-server-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: udp-server
+    spec:
+      containers:
+      - name: udp-server
+        image: jpoon/udp-server
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 10001
+          protocol: UDP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: udp-server-service
+  labels:
+    app: udp-server
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 10001
+    protocol: UDP
+  selector:
+    name: udp-server

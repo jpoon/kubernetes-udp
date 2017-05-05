@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: udp-client-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: udp-client 
+    spec:
+      containers:
+      - name: udp-client
+        image: jpoon/udp-client
+        imagePullPolicy: Always
+        env:
+        - name: SERVER_ADDRESS
+          # Replace with ClusterIP/ServiceIP
+          value: "10.0.124.219"
