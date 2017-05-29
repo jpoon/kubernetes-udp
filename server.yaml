@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: udp-server-deployment
 spec:
-  replicas: 1
+  replicas: 5
   template:
     metadata:
       labels:
@@ -25,6 +25,7 @@ metadata:
     app: udp-server
 spec:
   type: LoadBalancer
+  sessionAffinity: ClientIP
   ports:
   - port: 10001
     protocol: UDP

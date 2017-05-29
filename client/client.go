@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func CheckError(err error) {
+func checkError(err error) {
 	if err != nil {
 		fmt.Println("Error: ", err)
 	}
@@ -18,24 +18,27 @@ func main() {
 	Server := os.Getenv("SERVER_ADDRESS")
 	fmt.Println("SERVER_ADDRESS=" + Server)
 
-	ServerAddr, err := net.ResolveUDPAddr("udp", Server+":10001")
-	fmt.Println("ServerAddr=" + ServerAddr.String())
-	CheckError(err)
+	serverAddr, err := net.ResolveUDPAddr("udp", Server+":10001")
+	fmt.Println("ServerAddr=" + serverAddr.String())
+	checkError(err)
 
-	Conn, err := net.DialUDP("udp", nil, ServerAddr)
-	CheckError(err)
+	conn, err := net.DialUDP("udp", nil, serverAddr)
+	checkError(err)
+	defer conn.Close()
 
-	defer Conn.Close()
+	buf := make([]byte, 1024)
 	i := 0
 
 	for {
 		msg := strconv.Itoa(i)
+		fmt.Fprintf(conn, msg)
 		i++
-		buf := []byte(msg)
-		_, err := Conn.Write(buf)
+
+		n, addr, err := conn.ReadFromUDP(buf)
+		fmt.Println("Received ", string(buf[0:n]), " from ", addr)
 
 		if err != nil {
-			fmt.Println(msg, err)
+			fmt.Println("Error: ", err)
 		}
 
 		time.Sleep(time.Second * 1)

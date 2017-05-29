@@ -6,10 +6,17 @@ import (
 	"os"
 )
 
-func CheckError(err error) {
+func checkError(err error) {
 	if err != nil {
 		fmt.Println("Error: ", err)
 		os.Exit(0)
+	}
+}
+
+func sendResponse(conn *net.UDPConn, addr *net.UDPAddr, msg []byte) {
+	_, err := conn.WriteToUDP(msg, addr)
+	if err != nil {
+		fmt.Println("Error: ", err)
 	}
 }
 
@@ -18,23 +25,31 @@ func main() {
 
 	fmt.Println("Listening on", port)
 
+	/* Hostname */
+	hostname, err := os.Hostname()
+	fmt.Println("Hostname=" + hostname)
+	checkError(err)
+
 	/* Lets prepare a address at any address at port 10001*/
-	ServerAddr, err := net.ResolveUDPAddr("udp", ":"+port)
-	CheckError(err)
+	serverAddr, err := net.ResolveUDPAddr("udp", ":"+port)
+	checkError(err)
 
 	/* Now listen at selected port */
-	ServerConn, err := net.ListenUDP("udp", ServerAddr)
-	CheckError(err)
-	defer ServerConn.Close()
+	conn, err := net.ListenUDP("udp", serverAddr)
+	checkError(err)
+	defer conn.Close()
 
-	buf := make([]byte, 1024)
+	msg := []byte(hostname)
+	buf := make([]byte, 2048)
 
 	for {
-		n, addr, err := ServerConn.ReadFromUDP(buf)
-		fmt.Println("Received ", string(buf[0:n]), " from ", addr)
-
+		_, remoteaddr, err := conn.ReadFromUDP(buf)
+		fmt.Println("Received ", string(buf), " from ", remoteaddr)
 		if err != nil {
 			fmt.Println("Error: ", err)
+			continue
 		}
+
+		go sendResponse(conn, remoteaddr, msg)
 	}
 }
