@@ -7,4 +7,4 @@ COPY . ./src/udp/
 ENTRYPOINT go run ./src/udp/server.go
 
 # Expose your port
-EXPOSE 61243
+EXPOSE 10001
