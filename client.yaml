@@ -11,9 +11,9 @@ spec:
     spec:
       containers:
       - name: udp-client
-        image: jpoon/udp-client
+        image: xtoph/aks-udp-client
         imagePullPolicy: Always
         env:
         - name: SERVER_ADDRESS
           # Replace with ClusterIP/ServiceIP
-          value: "10.0.124.219"
+          value: "52.173.29.131"
