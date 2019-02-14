@@ -1,10 +1,10 @@
 FROM golang:1.8.1-alpine
 
 # Add all source code
-COPY . ./src/udp/
+COPY ./server ./server/
 
 # Indicate the binary as our entrypoint
-ENTRYPOINT go run ./src/udp/server.go
+ENTRYPOINT go run ./server/server.go
 
 # Expose your port
 EXPOSE 10001

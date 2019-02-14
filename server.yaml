@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: udp-server
-        image: jpoon/udp-server
+        image: xtoph/aks-udp-server
         imagePullPolicy: Always
         ports:
         - containerPort: 10001
